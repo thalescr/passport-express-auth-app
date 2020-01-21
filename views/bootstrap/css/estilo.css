@@ -1,0 +1,41 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css?family=Ranga&display=swap');
+/* font-family: 'Ranga', cursive; */
+
+/*Sombra inferior do navbar */
+.navbar {
+    box-shadow: 1px 4px 4px rgba(128, 128, 128, 0.2);
+}
+
+.h2-title {
+    font-family: 'Ranga', cursive;
+    font-size: 60px;    
+}
+
+/*Top text*/
+.p-text {
+    font-family: 'Ranga', cursive;
+    font-size: 35px;     
+}
+
+
+/*fonte para labels do form*/
+.form-label {
+    font-family: 'Ranga', cursive;
+    font-size: 25px;    
+}
+/*area de mensagem*/
+.t-area {
+    border-style: solid;
+    border-radius: 10px;
+    width: 80%;
+    height: 100px;
+    margin-left: 10%;
+    margin-right: 10%;
+    resize: none;
+}
+
+
+
+
+
