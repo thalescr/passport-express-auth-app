@@ -6,7 +6,7 @@ mongoose.set('useUnifiedTopology', true);
 mongoose.set('useNewUrlParser', true);
 
 // Attempt to connect
-mongoose.connect('mongodb://localhost/project-db').then(function() {
+mongoose.connect('mongodb://localhost/simple-node-app-db').then(function() {
     console.info('Database connected');
 }).catch(function(error) {
     console.log('Database connection error: ' + error);

@@ -1,9 +1,11 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const expressLayouts = require('express-layouts');
 const path = require('path');
 const mongoose = require('mongoose');
 
+// Database connection
 require('./libs/db-connection');
 
 // Variables
@@ -16,6 +18,10 @@ const port = process.env.PORT || 8081;
 
     // Template Engine
     app.set('view engine', 'ejs');
+    app.use(expressLayouts);
+
+    // Static Files
+    app.use(express.static(__dirname + '/public'))
 
     // Routes
     app.use(require('./routes/'));

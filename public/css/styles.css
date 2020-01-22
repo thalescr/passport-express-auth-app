@@ -35,6 +35,11 @@
     resize: none;
 }
 
+/* Login card */
+#loginCard {
+    width: 50%;
+    margin: 0 auto;
+}
 
 
 
