@@ -1,4 +1,6 @@
 const router = require('express').Router();
+const userController = require('../controllers/user');
+const {ensureGuest, ensureAuthenticated} = require('../libs/auth');
 
 // Home
 router.get('/', function(req, res) {
@@ -6,23 +8,22 @@ router.get('/', function(req, res) {
 });
 
 // Login
-router.get('/login', function(req, res) {
-    res.render('pages/login');
-});
-
-// Login form post
-router.post('/login', function(req, res) {
-    res.send('Successfully connected: Email: ' + req.body.email + ' Senha: ' + req.body.password);
-});
+router.get('/login', ensureGuest, userController.login);
 
 // Register
-router.get('/register', function(req, res) {
-    res.render('pages/register');
-});
+router.get('/register', ensureGuest, userController.register);
 
-// Register form post
-router.post('/register', function(req, res) {
-    res.send('Successfully registered');
-});
+// Logout
+router.get('/logout', ensureAuthenticated, userController.logout);
+
+// Profile
+router.get('/profile', ensureAuthenticated, userController.profile);
+
+// Login post
+router.post('/login', userController.postLogin);
+
+// Register post
+router.post('/register', userController.postRegister);
+
 
 module.exports = router;

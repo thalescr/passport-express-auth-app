@@ -1,0 +1,36 @@
+
+<div class="container p-1">
+    <div class="card" id="loginCard"><!--Container do Card-->
+        <br/>
+        <br/>
+        <br/>
+        <h3 class="text-center">Registre-se</h3>
+        <div class="container">
+            <form class="mx-3" action="/register" method="post">
+
+                <div class="form-group"><!-- Inputs de login e senha -->
+                    <label for="name">Nome</label>
+                    <input type="text" class="form-control" placeholder="Name" style="border-radius: 15px" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Email</label>
+                    <input type="email" class="form-control" placeholder="Email" style="border-radius: 15px" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Senha</label>
+                    <input type="password" class="form-control" placeholder="Password" style="border-radius: 15px" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Confirmação da senha</label>
+                    <input type="password" class="form-control" placeholder="Confirm Password" style="border-radius: 15px" name="rpassword" required>
+                </div><!-- Fim dos inputs -->
+
+                <p class="text-center mb-0"><!-- Botão para entrar -->
+                    <button type="submit" class="btn btn-outline-dark align-center" style="width: 100%; border-radius: 15px"">Registrar</button>
+                </p>
+                <br/>
+            </form><!-- Fim Form -->
+        </div><!-- Fim do container nterno -->
+        <br/>
+    </div><!-- Fim do card -->
+</div><!-- Fim do main container -->
