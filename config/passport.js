@@ -7,22 +7,21 @@ function initialize(passport) {
     const authenticateUser = async function(email, password, done) {
         // Find the user with an email
         const user = User.findOne({email: email});
-        if(user == null) {
+        if (user == null) {
             return done(null, false, {message: 'Invalid login'}); // No user found
         }
 
         // Attempt to login
         try {
             bcrypt.compare(password, user.password, function(err, isMatch) {
-                if(isMatch) {
+                if (isMatch) {
                     return done(null, user);
-                }
-                else {
+                } else {
                     return done(null, false, {message: 'Invalid login'}); // Password incorrect
                 }
             });
         }
-        catch(error) {
+        catch (error) {
             return done(error);
         }
     }

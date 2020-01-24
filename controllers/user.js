@@ -1,7 +1,7 @@
-const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const User = require('../models/User');
+
 
 module.exports = {
     // GET endpoints
@@ -20,57 +20,52 @@ module.exports = {
     },
 
     // POST endpoints
-    postRegister: async function(req, res) {
-        let errors = [];
-
+    postRegister: function(req, res) {
+        let error;
+        
         // Different passwords error
-        if(req.body.password != req.body.rpassword) {
-            res.render('page/register', {message: 'As senhas não coincidem'});
+        if (req.body.password !== req.body.rpassword) {
+            error = 'As senhas não conferem'; 
+    
+        // Small password error
+        } else if (req.body.password.length < 8) {
+            error = 'A senha deve conter ao menos 8 caracteres';
         }
 
-        // Small password error
-        if(req.body.password.length < 8) {
-            res.render('page/register', {message: 'A senha deve conter ao menos 8 caracteres'});
-        }
+        // Attempt to find a user with requested email
+        User.findOne({email: req.body.email}).then(function(user) {
+            // User already exists
+            if (user) {
+                error = 'O email inserido já foi registrado';
+            }
+        }).catch();
+    
         // Check for errors
-        if(errors) {
+        if (error) {
             res.render('pages/register', {
-                message,
+                messages: {error: error},
                 name: req.body.name,
                 email: req.body.email,
-                password: req.body.password,
-                rpassword: req.body.rpassword
             });
-        }
-        else {
-            User.findOne({email: req.body.email}).then(function(user) {
-                if(user) {
-                    // Email already registered error
-                    errors.push({message: 'Email já cadastrado'});
-                    res.render('pages/register', {errors, name: '', email: '', password: '', rpassword: ''});
-                }
-                else {
-                    const newUser = new User({
-                        name: req.body.name,
-                        email: req.body.email,
-                        password: req.body.password
-                    });
-                    bcrypt.genSalt(10, function(err, salt) {
-                        bcrypt.hash(newUser.password, salt, function(err, hash) {
-                            if(err) {
-                                throw err;
-                            }
-                            newUser.password = hash;
-                            newUser.save().then(function(user) {
-                                console.log(`User ${user.name} successfully registered!`);
-                                res.redirect('/login');
-                            }).catch(function(err) {
-                                console.log('Error when encrypting: ' + err)
-                            });
-                        });
-                    });
+    
+        } else {
+            const hash = bcrypt.hash(req.body.password, 10, function(err) {
+                if(err) {
+                    console.log('Error when hashing password: ' + err);
                 }
             });
+            const newUser = new User({
+                name: req.body.name,
+                email: req.body.email,
+                password: hash
+            })
+            try {
+                newUser.save();
+                res.redirect('/login');
+            }
+            catch (error) {
+                console.log('Failed to register user: ' + error);
+            }
         }
     },
     postLogin: function(req, res, next) {
