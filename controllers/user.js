@@ -25,12 +25,12 @@ module.exports = {
 
         // Different passwords error
         if(req.body.password != req.body.rpassword) {
-            errors.push({text: 'As senhas não coincidem'});
+            errors.push({message: 'As senhas não coincidem'});
         }
 
         // Small password error
         if(req.body.password.length < 8) {
-            errors.push({text: 'A senha deve conter ao menos 8 caracteres'});
+            errors.push({message: 'A senha deve conter ao menos 8 caracteres'});
         }
         // Check for errors
         if (errors.length > 0) {
@@ -46,7 +46,7 @@ module.exports = {
             User.findOne({email: req.body.email}).then(function(user) {
                 if(user) {
                     // Email already registered error
-                    errors.push({text: 'Email já cadastrado'});
+                    errors.push({message: 'Email já cadastrado'});
                     res.render('pages/register', {errors, name: '', email: '', password: '', rpassword: ''});
                 }
                 else {
@@ -76,7 +76,8 @@ module.exports = {
     postLogin: function(req, res, next) {
         passport.authenticate('local', {
             successRedirect: '/secret',
-            failureRedirect: '/login'
+            failureRedirect: '/login',
+            failureFlash: true
         })(req, res, next);
     }
 };

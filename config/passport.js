@@ -1,37 +1,41 @@
-const LocalStrategy = require('passport-local');
+const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 
 const User = require('../models/User');
 
-module.exports = function(passport) {
-    passport.use(new LocalStrategy({usernameField: 'email'}, function(email, password, done) {
-        User.findOne({email: email}).then(function(user) {
-            if(!user) {
-                console.log('User not found');
-                return done(null, false);
-            }
-            bcrypt.compare(password, user.password, function(error, isMatch) {
-                if(error) {
-                    trow;
-                }
+function initialize(passport) {
+    const authenticateUser = async function(email, password, done) {
+        // Find the user with an email
+        const user = User.findOne({email: email});
+        if(user == null) {
+            return done(null, false, {message: 'Invalid login'}); // No user found
+        }
+
+        // Attempt to login
+        try {
+            bcrypt.compare(password, user.password, function(err, isMatch) {
                 if(isMatch) {
-                    return done(null, error);
+                    return done(null, user);
                 }
                 else {
-                    console.log('Password incorrect');
-                    return done(null, false);
+                    return done(null, false, {message: 'Invalid login'}); // Password incorrect
                 }
             });
-        });
-    }));
+        }
+        catch(error) {
+            return done(error);
+        }
+    }
+
+    passport.use(new LocalStrategy({usernameField: 'email'}, authenticateUser));
 
     passport.serializeUser(function(user, done) {
         done(null, user.id);
     });
 
     passport.deserializeUser(function(id, done) {
-        User.findById(id, function(error, user) {
-            done(error, user);
-        });
+        return done(null, User.getOne({id: id}));
     });
 }
+
+module.exports = initialize;

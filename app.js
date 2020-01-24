@@ -1,3 +1,8 @@
+// Check for dev mode and require 'dotenv'
+if(process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -6,6 +11,8 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
 const MongoStore = require('connect-mongo')(session);
+const flash = require('express-flash');
+const methodOverride = require('method-override');
 const path = require('path');
 
 // Variables
@@ -26,9 +33,9 @@ require('./libs/db-connection');
 
     // Sessions
     app.use(session({
-        secret: 'aW31Rdp@$sw0rd',
-        resave: true,
-        saveUninitialized: true,
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
         store: new MongoStore({
             mongooseConnection: mongoose.connection,
             url: MONGO_URL,
@@ -36,16 +43,22 @@ require('./libs/db-connection');
         })
     }));
 
+    // Flash
+    app.use(flash());
+
     // Static Files
     app.use(express.static(path.join(__dirname, '/public')));
-
-    // Routes
-    app.use(require('./routes/'));
 
     // Passport
     app.use(passport.initialize());
     app.use(passport.session());
     require('./config/passport')(passport);
+
+    // Method Override
+    app.use(methodOverride('_method'));
+
+    // Routes
+    app.use(require('./routes/'));
 
 // Run server
 app.listen(port, function() {
