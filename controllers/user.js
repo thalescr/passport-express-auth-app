@@ -20,22 +20,22 @@ module.exports = {
     },
 
     // POST endpoints
-    postRegister: function(req, res) {
+    postRegister: async function(req, res) {
         let errors = [];
 
         // Different passwords error
         if(req.body.password != req.body.rpassword) {
-            errors.push({message: 'As senhas não coincidem'});
+            res.render('page/register', {message: 'As senhas não coincidem'});
         }
 
         // Small password error
         if(req.body.password.length < 8) {
-            errors.push({message: 'A senha deve conter ao menos 8 caracteres'});
+            res.render('page/register', {message: 'A senha deve conter ao menos 8 caracteres'});
         }
         // Check for errors
-        if (errors.length > 0) {
+        if(errors) {
             res.render('pages/register', {
-                errors,
+                message,
                 name: req.body.name,
                 email: req.body.email,
                 password: req.body.password,
