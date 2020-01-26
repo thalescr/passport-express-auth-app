@@ -14,9 +14,7 @@ This is a simple authentication application written in Node JS, using the module
 
 To run this app, you must have MongoDB installed and configured.
 
-After cloning the repository, put this `SESSION_SECRET = secret` in a file named '.env' in your working directory.
-
-Then, run the following commands:
+After cloning the repository, put this `SESSION_SECRET = secret` in a file named '.env' in your working directory and then, run the following commands:
 
 ```
 npm install
