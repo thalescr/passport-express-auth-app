@@ -16,13 +16,13 @@ module.exports = {
         res.redirect('/login');
     },
     profile: function(req, res) {
-        res.render('pages/profile');
+        res.render('pages/profile', {user: req.user});
     },
 
     // POST endpoints
     postRegister: function(req, res) {
         let error;
-        
+
         // Different passwords error
         if (req.body.password !== req.body.rpassword) {
             error = 'As senhas não conferem'; 
@@ -49,28 +49,25 @@ module.exports = {
             });
     
         } else {
-            const hash = bcrypt.hash(req.body.password, 10, function(err) {
-                if(err) {
-                    console.log('Error when hashing password: ' + err);
+            const hash = bcrypt.hash(req.body.password, 10, function(e, hash) {
+                if(e) {
+                    console.log('Failed to register user: ' + e);
+                } else {
+                    const newUser = new User({
+                        name: req.body.name,
+                        email: req.body.email,
+                        password: hash
+                    });
+            
+                    newUser.save();
+                    res.redirect('/login');
                 }
             });
-            const newUser = new User({
-                name: req.body.name,
-                email: req.body.email,
-                password: hash
-            })
-            try {
-                newUser.save();
-                res.redirect('/login');
-            }
-            catch (error) {
-                console.log('Failed to register user: ' + error);
-            }
         }
     },
     postLogin: function(req, res, next) {
         passport.authenticate('local', {
-            successRedirect: '/secret',
+            successRedirect: '/profile',
             failureRedirect: '/login',
             failureFlash: true
         })(req, res, next);
