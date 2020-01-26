@@ -1,3 +1,3 @@
 module.exports = {
-    MONGO_URL: 'mongodb://localhost/simplenodeapp'
+    MONGO_URL: 'mongodb://localhost/simpleauthapp'
 };

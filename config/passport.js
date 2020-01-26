@@ -8,7 +8,7 @@ function initialize(passport) {
         // Find the user with an email
         User.findOne({email: email}).then(function(user) {
             if (!user) {
-                return done(null, false, {message: 'Invalid login (201)'}); // No user found
+                return done(null, false, {message: 'Tentativa de login inválida'}); // No user found
             }
 
             // Attempt to login
@@ -16,7 +16,7 @@ function initialize(passport) {
                 if (isMatch) {
                     return done(null, user);
                 } else {
-                    return done(null, false, {message: 'Invalid login (202)'}); // Password incorrect
+                    return done(null, false, {message: 'Tentativa de login inválida'}); // Password incorrect
                 }
             })
         });
