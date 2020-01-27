@@ -5,7 +5,7 @@
                 <div class="card">
                     <div class="card-header">Login</div>
                     <div class="card-body">
-                        <form action="/login" method="post">
+                        <form action="/user/login" method="post">
                             <% if(messages.error) {%>
                                 <div class="alert alert-danger"><%= messages.error %></div>
                             <% } %>
@@ -49,7 +49,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-6 offset-md-4">
-                                    <a href="/register" class="btn btn-link">
+                                    <a href="/user/register" class="btn btn-link">
                                         Registre-se
                                     </a>
                                 </div>

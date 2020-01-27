@@ -1,0 +1,84 @@
+<main class="login-form">
+    <div class="cotainer">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">Sair</div>
+                    <div class="card-body">
+                        <form action="/user/change-name" method="post">
+                            <% if(messages.error) {%>
+                                <div class="alert alert-danger"><%= messages.error %></div>
+                            <% } %>
+                            
+                            <div class="form-group row">
+                                <label for="name" class="col-md-4 col-form-label text-md-right">Nome</label>
+                                <div class="col-md-6">
+                                    <input type="text" id="name" value="<%= user.name %>"class="form-control" name="name" required autofocus>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-6 offset-md-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        Alterar nome
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form action="/user/change-email" method="post">
+                            <% if(messages.error) {%>
+                                <div class="alert alert-danger"><%= messages.error %></div>
+                            <% } %>
+                            
+                            <div class="form-group row">
+                                <label for="email_address" class="col-md-4 col-form-label text-md-right">Email</label>
+                                <div class="col-md-6">
+                                    <input type="text" id="email_address" value="<%= user.email %>" class="form-control" name="email" required autofocus>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-6 offset-md-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        Alterar email
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="form-group row">
+                            <label for="email_address" class="col-md-4 col-form-label text-md-right">Senha</label>
+                            <div class="col-md-6 offset-md-4">
+                                <a href="/user/change-password"><button type="" class="btn btn-primary">
+                                    Alterar senha
+                                </button></a>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="email_address" class="col-md-4 col-form-label text-md-right">Sessão</label>
+                            <div class="col-md-6 offset-md-4">
+                                <a href="/user/logout"><button type="" class="btn btn-secondary">
+                                    Sair
+                                </button></a>
+                            </div>
+                        </div>
+
+                        <div class="form-group row"></div>
+
+                        <div class="form-group">
+                            <label for="email_address" class="col-md-4 col-form-label text-md-right">Conta</label>
+                            <div class="col-md-6 offset-md-4">
+                                <a href=""><button type="" class="btn btn-danger">
+                                    Excluir conta
+                                </button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>

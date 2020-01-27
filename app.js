@@ -1,4 +1,4 @@
-// Check for dev mode and require 'dotenv'
+// Check if dev mode and require 'dotenv'
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
@@ -59,6 +59,7 @@ require('./libs/db-connection');
 
     // Routes
     app.use(require('./routes/'));
+    app.use('/user', require('./routes/user'));
 
 // Run server
 app.listen(port, function() {
