@@ -3,28 +3,36 @@ const passport = require('passport');
 const User = require('../models/User');
 
 // Checking functions
-function checkDifferentPasswords(password, rpassword, _error) {
-    if(password !== rpassword) {
+function checkPasswords(password, rpassword) {
+    let error;
+
+    // Different passwords error
+    if (password !== rpassword) {
         error = 'As senhas não conferem';
     }
-}
 
-function checkSmallPassword(password, _error) {
-    if(password.length < 8) {
+    // Small password error
+    if (password.length < 8) {
         error = 'A senha deve conter ao menos 8 caracteres';
     }
+
+    return error;
 }
 
-function checkIfUserExists(User, email, _error) {
+function checkUser(User, email) {
+    let error;
+
     // Attempt to find a user with requested email
     User.findOne({email: email}).then(function(user) {
         // User already exists
         if (user) {
-            _error = 'O email inserido já foi registrado';
+            error = 'O email inserido já foi registrado';
         }
     }).catch(function(err) {
         console.log('Error when attempting to find a user: ' + err);
     });
+
+    return error;
 }
 
 // User controllers
@@ -49,43 +57,42 @@ module.exports = {
 
     // POST endpoints
     postRegister: function(req, res) {
-        let error;
+        let error = checkPasswords(req.body.password, req.body.rpassword);
 
-        // Different passwords error
-        checkDifferentPasswords(req.body.password, req.body.rpassword, error);
-    
-        // Small password error
-        checkSmallPassword(req.body.password, error);
-
-        // Attempt to find a user with requested email
-        checkIfUserExists(User, req.body.email, error);
-    
-
-        // Check for errors
+        // Check for errors in password
         if (error) {
             res.render('auth/register', {
                 messages: {error: error},
                 name: req.body.name,
                 email: req.body.email,
             });
-    
+
         } else {
-            const hash = bcrypt.hash(req.body.password, 10, function(e, hash) {
-                if(e) {
-                    console.log('Failed to register user: ' + e);
-                } else {
-                    const newUser = new User({
-                        name: req.body.name,
-                        email: req.body.email,
-                        password: hash
-                    });
-            
-                    newUser.save();
-                    res.redirect('/user/login');
-                }
-            });
+            error = checkUser(User, req.body.email);
+
+            // Check for errors in User
+            if (error) {
+                res.render('auth/register', {messages: {error: error}});
+            }
+            else {
+                const hash = bcrypt.hash(req.body.password, 10, function(e, hash) {
+                    if(e) {
+                        console.log('Failed to register user: ' + e);
+                    } else {
+                        const newUser = new User({
+                            name: req.body.name,
+                            email: req.body.email,
+                            password: hash
+                        });
+                
+                        newUser.save();
+                        res.redirect('/user/login');
+                    }
+                });
+            }
         }
     },
+
     postLogin: function(req, res, next) {
         passport.authenticate('local', {
             successRedirect: '/user/profile',
@@ -93,22 +100,16 @@ module.exports = {
             failureFlash: true
         })(req, res, next);
     },
-    postChangeName: async function(req, res) {
+
+    postChangeName: function(req, res) {
         req.user.name = req.body.name;
-        try {
-            await req.user.save();
-        }
-        catch (err) {
-            console.log('Error when updating user name: ' + err);
-        }
+        req.user.save();
         res.redirect('/user/profile');
 
     },
-    postChangeEmail: async function(req, res) {
-        let error;
 
-        // Attempt to find a user with requested email
-        checkIfUserExists(User, req.body.email, error);
+    postChangeEmail: function(req, res) {
+        let error = checkUser(User, req.body.email);
 
         // Check for errors
         if (error) {
@@ -118,44 +119,26 @@ module.exports = {
         
         } else {
             req.user.email = req.body.email;
-            try {
-                await req.user.save();
-            }
-            catch (err) {
-                console.log('Error when updating user email: ' + err);
-            }
+            req.user.save();
             res.redirect('/user/profile');
         }
 
     },
+
     postChangePassword: function(req, res) {
-        let error;
-
-        // Different passwords error
-        checkDifferentPasswords(req.body.password, req.body.rpassword, error);
-    
-        // Small password error
-        checkSmallPassword(req.body.password, error);
-
-        // Attempt to find a user with requested email
-        checkIfUserExists(User, req.body.email, error);
+        let error = checkPasswords(req.body.password, req.body.rpassword);
 
         // Check for errors
         if (error) {
             res.render('auth/change-password', {messages: {error: error}});
     
         } else {
-            const hash = bcrypt.hash(req.body.password, 10, async function(e, hash) {
+            const hash = bcrypt.hash(req.body.password, 10, function(e, hash) {
                 if(e) {
                     console.log('Failed to hash new user password: ' + e);
                 } else {
                     req.user.password = hash;
-                    try {
-                        await req.user.save();
-                    }
-                    catch (err) {
-                        console.log('Error when updating password: ' + err);         
-                    }
+                    req.user.save();
                     res.redirect('/user/profile');
                 }
             });
