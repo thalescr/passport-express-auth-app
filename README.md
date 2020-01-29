@@ -5,7 +5,7 @@ This is a simple authentication application written in Node JS, using the module
 * Express JS
 * Bcrypt JS
 * Body Parser
-* Passport
+* Passport JS
 * Mongoose
 
 ![Login page screenshot](screenshot.png)
